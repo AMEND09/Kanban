@@ -13,15 +13,22 @@ class State(rx.State):
         "Done": ["Card 1", "Card 2"],
     }
 
+    @rx.event
+    def add_col(self):
+        self.cols = {**self.cols, "TEST": []}
+
     @staticmethod
     def render_cols(col_name: str) -> rx.Component:
         return rx.vstack(
             rx.card(
                 rx.heading(col_name, align="center"),
+                rx.button(rx.heading("-"), background_color="RED", width="20px", height="20px", align="left"),
                 width="300px",
             ),
             rx.card(
-                rx.foreach(State.cols[col_name], State.render_cards),
+                rx.scroll_area(
+                    rx.foreach(State.cols[col_name], State.render_cards),
+                ),
                 size="4",
                 width="300px",
                 height="500px"
@@ -52,6 +59,7 @@ def index() -> rx.Component:
             ),
             rx.button(
                 rx.heading("+"),
+                on_click=State.add_col,
                 width="60px",
                 height="60px",
                 background_color="GREEN",
